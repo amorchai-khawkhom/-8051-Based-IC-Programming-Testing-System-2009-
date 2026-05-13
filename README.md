@@ -10,6 +10,18 @@
 - Embedded firmware written in C
 - Power regulation onboard
 
+## Firmware Architecture
+
+The firmware was written in Embedded C for the 8051 architecture.
+
+Main modules:
+- LCD driver
+- keypad scanning
+- IC test logic
+- UART communication
+- sound/buzzer control
+- test routines
+
 ## Hardware Architecture
 
 Main Components:
@@ -24,11 +36,11 @@ Main Components:
 ## Development Environment
 
 - Year: ~2009
-- MCU Family: 8051
-- Compiler: SDCC / Keil C51
-- PCB Design: Protel 99SE
-- Programming Language: Embedded C
-- Communication: UART / RS232
+- MCU: AT89C51ED2
+- Architecture: 8051
+- IDE: Keil uVision
+- PCB Software: Protel 99SE / Altium
+- Language: Embedded C
 
 ## Project Photos
 
