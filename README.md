@@ -137,3 +137,11 @@ Some source files and original CAD documents may be incomplete due to hardware m
 - User interface implementation on resource-limited systems
 - Low-level serial communication
 - Mechanical integration and enclosure assembly
+
+## Author
+Amorchai Khawkhom (อมรชัย ขาวขำ) Electronics & Robotics Engineer Embedded Systems • Robotics • CAD Design • Prototyping • 3D Printer
+
+### Video Demonstrations
+Additional robotics , 3D Printer , miniCNC , Laser and embedded system demonstrations are available on the YouTube channel:
+
+https://www.youtube.com/@gupaditkman1335
