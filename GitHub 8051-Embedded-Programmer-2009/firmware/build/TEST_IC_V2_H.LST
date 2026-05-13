@@ -1,0 +1,270 @@
+C51 COMPILER V8.12   TEST_IC_V2_H                                                          08/08/2010 05:42:40 PAGE 1   
+
+
+C51 COMPILER V8.12, COMPILATION OF MODULE TEST_IC_V2_H
+OBJECT MODULE PLACED IN TEST_IC_V2_H.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE TEST_IC_V2_H.c COMPACT ROM(COMPACT) BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <at89c51ac2.h>
+   2          #include <i2c_keypad_h.h>
+   3          #include <lcd4bit_port3_h.h>
+   4          #include <sound_h.h>
+   5          
+   6          #include<TEST7400.h>
+   7          #include<TEST7401.h>
+   8          #include<TEST7402.h>
+   9          #include<TEST7403.h>
+  10          #include<TEST7404.h>
+  11          #include<TEST7408.h>
+  12          #include<TEST7432.h>
+  13          #include<TEST7486.h>
+  14          
+  15          void delay(unsigned long i);
+  16          
+  17          int input_mode (void);
+  18          int input_number_ic (void);
+  19          
+  20          void test_auto (void);
+  21          void test_manual (void);
+  22          void main_test (void);
+  23          void back_to_menu (void);
+  24          void print_lcd_back_to_menu (void);
+  25          
+  26          int round_keypad=0,keypad_value=0,keypad_sum=0,keypad_sum_main=0,keypad_mode=0  ;
+  27          unsigned char keypad=0,keypad_display=0;
+  28          
+  29          void main ()
+  30          {
+  31   1                main_test ();
+  32   1      }
+  33                     
+  34          void main_test (void)
+  35          {
+  36   1              round_keypad = 0;
+  37   1              keypad_value = 0;
+  38   1              keypad_sum = 0;
+  39   1              keypad_sum_main=0;
+  40   1              keypad_mode=0;
+  41   1              keypad = 0;
+  42   1              keypad_display=0;
+  43   1              delay(1000);
+  44   1      
+  45   1              intitial_lcd();
+  46   1              lcd_line1 ();sprintf(lcd_buffer,"Bualoy & Nussra.");print_lcd ();
+  47   1              lcd_line2 ();sprintf(lcd_buffer,"MACHINE IC TEST.");print_lcd ();
+  48   1              lcd_line3 ();sprintf(lcd_buffer,"74XX 00 01 02 03");print_lcd ();
+  49   1              lcd_line4 ();sprintf(lcd_buffer,"04 08 32 86.    ");print_lcd ();
+  50   1              delay(50000);
+  51   1              
+  52   1              clear_lcd();
+  53   1              lcd_line1 ();sprintf(lcd_buffer,"PLEASE PRESS 1,2");print_lcd (); 
+  54   1              lcd_line2 ();sprintf(lcd_buffer," 1 = AUTO MODE  ");print_lcd ();
+  55   1              lcd_line3 ();sprintf(lcd_buffer," 2 = MANUAL MODE");print_lcd ();
+C51 COMPILER V8.12   TEST_IC_V2_H                                                          08/08/2010 05:42:40 PAGE 2   
+
+  56   1              lcd_line4 ();sprintf(lcd_buffer,"You Select Mode ");print_lcd ();
+  57   1              delay(5000);
+  58   1              
+  59   1              keypad_mode = input_mode ();
+  60   1                      
+  61   1                      
+  62   1      
+  63   1              switch (keypad_mode)
+  64   1              {
+  65   2                      case 1  :       test_auto ();   break ; 
+  66   2                      case 2  :       test_manual();  break ;
+  67   2                      default :       clear_lcd();
+  68   2                                              lcd_line1 ();sprintf(lcd_buffer,"You Insert Value");print_lcd ();
+  69   2                                              lcd_line2 ();sprintf(lcd_buffer,"    Invalid     ");print_lcd ();
+  70   2                                              lcd_line3 ();sprintf(lcd_buffer,"Please Press 1,2");print_lcd ();
+  71   2                                              lcd_line4 ();sprintf(lcd_buffer," * Back to Menu ");print_lcd ();
+  72   2                                              back_to_menu();         
+  73   2              }
+  74   1      }
+  75          
+  76          int input_mode (void)
+  77          {       
+  78   1              round_keypad = 0;
+  79   1              while(round_keypad<1) 
+  80   1              {
+  81   2              keypad_value = 0;       
+  82   2              keypad  =  scankey();
+  83   2                      if (keypad != 15)
+  84   2                      {       
+  85   3                              keypad_display = keypad;
+  86   3                              keypad_value = keypad;                                                          
+  87   3                              while (keypad !=15)
+  88   3                              {
+  89   4                                      keypad  =  scankey(); 
+  90   4                              }
+  91   3                              sound_test_step();
+  92   3                              write_cmd_lcd (0xDF);sprintf(lcd_buffer,"%c",keypad_display);print_lcd ();
+  93   3                              keypad_value = keypad_value - 48;
+  94   3                              delay(50000);
+  95   3                              round_keypad++;
+  96   3                       }
+  97   2              }
+  98   1              return keypad_value;
+  99   1      }
+ 100          
+ 101          void test_auto (void)
+ 102          {
+ 103   1              clear_lcd();
+ 104   1              lcd_line1 ();sprintf(lcd_buffer,"PLEASE INSERT IC");print_lcd (); 
+ 105   1              lcd_line2 ();sprintf(lcd_buffer," PLEASE  INSERT ");print_lcd ();
+ 106   1              lcd_line3 ();sprintf(lcd_buffer," SERIES  NUMBER ");print_lcd ();
+ 107   1              lcd_line4 ();sprintf(lcd_buffer," OF 74xx        ");print_lcd ();
+ 108   1              
+ 109   1              keypad_sum_main = input_number_ic ();
+ 110   1      
+ 111   1              delay(50000);
+ 112   1      
+ 113   1              switch (keypad_sum_main)
+ 114   1              {
+ 115   2                      case 0  :  test_ic7400_all_auto();back_to_menu();break ;
+ 116   2                      case 1  :  test_ic7401_all_auto();back_to_menu();break ; 
+ 117   2                      case 2  :  test_ic7402_all_auto();back_to_menu();break ;
+C51 COMPILER V8.12   TEST_IC_V2_H                                                          08/08/2010 05:42:40 PAGE 3   
+
+ 118   2                      case 3  :  test_ic7403_all_auto();back_to_menu();break ;
+ 119   2                      case 4  :  test_ic7404_all_auto();back_to_menu();break ;
+ 120   2                      case 8  :  test_ic7408_all_auto();back_to_menu();break ;
+ 121   2                      case 32 :  test_ic7432_all_auto();back_to_menu();break ;
+ 122   2                      case 86 :  test_ic7486_all_auto();back_to_menu();break ;
+ 123   2              
+ 124   2                default :     clear_lcd();
+ 125   2                                      lcd_line1 ();sprintf(lcd_buffer," THE MACHINE IC ");print_lcd ();
+ 126   2                                      lcd_line2 ();sprintf(lcd_buffer," TESTER  Cann't ");print_lcd ();
+ 127   2                                      lcd_line3 ();sprintf(lcd_buffer," TEST IC 74XX%d ",keypad_sum_main);print_lcd ();
+ 128   2                                      lcd_line4 ();sprintf(lcd_buffer," * Back to Menu ");print_lcd ();
+ 129   2                                      back_to_menu();
+ 130   2                                                                              
+ 131   2              }                                                                         
+ 132   1      }
+ 133          
+ 134          void test_manual (void)
+ 135          {
+ 136   1              clear_lcd();
+ 137   1              lcd_line1 ();sprintf(lcd_buffer,"PLEASE INSERT IC");print_lcd (); 
+ 138   1              lcd_line2 ();sprintf(lcd_buffer," PLEASE  INSERT ");print_lcd ();
+ 139   1              lcd_line3 ();sprintf(lcd_buffer," SERIES  NUMBER ");print_lcd ();
+ 140   1              lcd_line4 ();sprintf(lcd_buffer," OF 74xx        ");print_lcd ();
+ 141   1              
+ 142   1              keypad_sum_main = input_number_ic ();
+ 143   1      
+ 144   1              delay(50000);
+ 145   1      
+ 146   1              switch (keypad_sum_main)
+ 147   1              {
+ 148   2                      case 0  :  test_ic7400_all();print_lcd_back_to_menu ();back_to_menu();break ;
+ 149   2                      case 1  :  test_ic7401_all();print_lcd_back_to_menu ();back_to_menu();break ; 
+ 150   2                      case 2  :  test_ic7402_all();print_lcd_back_to_menu ();back_to_menu();break ;
+ 151   2                      case 3  :  test_ic7403_all();print_lcd_back_to_menu ();back_to_menu();break ;
+ 152   2                      case 4  :  test_ic7404_all();print_lcd_back_to_menu ();back_to_menu();break ;
+ 153   2                      case 8  :  test_ic7408_all();print_lcd_back_to_menu ();back_to_menu();break ;
+ 154   2                      case 32 :  test_ic7432_all();print_lcd_back_to_menu ();back_to_menu();break ;
+ 155   2                      case 86 :  test_ic7486_all();print_lcd_back_to_menu ();back_to_menu();break ;
+ 156   2              
+ 157   2                default :     clear_lcd();
+ 158   2                                      lcd_line1 ();sprintf(lcd_buffer," THE MACHINE IC ");print_lcd ();
+ 159   2                                      lcd_line2 ();sprintf(lcd_buffer," TESTER  Cann't ");print_lcd ();
+ 160   2                                      lcd_line3 ();sprintf(lcd_buffer," TEST IC 74XX%d ",keypad_sum_main);print_lcd ();
+ 161   2                                      lcd_line4 ();sprintf(lcd_buffer," * Back to Menu ");print_lcd ();
+ 162   2                                      back_to_menu();
+ 163   2                                                                              
+ 164   2              }                                                                                                                                                 
+ 165   1      }
+ 166          
+ 167          int input_number_ic (void)
+ 168          {
+ 169   1              round_keypad = 0;
+ 170   1              while(round_keypad<2) 
+ 171   1              {
+ 172   2              keypad_value = 0;
+ 173   2              keypad  =  scankey();
+ 174   2                      if (keypad != 15)
+ 175   2                      {       
+ 176   3                              keypad_display = keypad;
+ 177   3                              keypad_value = keypad;                                                          
+ 178   3                              while (keypad !=15)
+ 179   3                              {
+C51 COMPILER V8.12   TEST_IC_V2_H                                                          08/08/2010 05:42:40 PAGE 4   
+
+ 180   4                                      keypad  =  scankey(); 
+ 181   4                              }
+ 182   3                              sound_test_step();
+ 183   3                      write_cmd_lcd (0xD8+round_keypad);sprintf(lcd_buffer,"%c",keypad_display);print_lcd ();//keypad_display 
+             -= number cann't opration but can display * # to lcd 
+ 184   3                      keypad_value = keypad_value - 48; //keypad_value = number can opration but cann't display * # to lcd    
+ 185   3                              if(round_keypad==0)
+ 186   3                              {
+ 187   4                              keypad_sum = keypad_value * 10;
+ 188   4                              }
+ 189   3                              if(round_keypad==1)
+ 190   3                              {
+ 191   4                              keypad_sum = keypad_sum + keypad_value ;
+ 192   4                              }
+ 193   3                              round_keypad++; 
+ 194   3                      }
+ 195   2              }
+ 196   1              return keypad_sum ; 
+ 197   1      }
+ 198          
+ 199          void back_to_menu (void)
+ 200          {
+ 201   1              round_keypad = 0;
+ 202   1              while(round_keypad<1) 
+ 203   1              {
+ 204   2              keypad_value = 0;       
+ 205   2              keypad  =  scankey();
+ 206   2                      if (keypad != 15)
+ 207   2                      {       
+ 208   3                              keypad_value = keypad;                                                          
+ 209   3                              while (keypad !=15)
+ 210   3                              {
+ 211   4                                      keypad  =  scankey(); 
+ 212   4                              }
+ 213   3                              sound_test_step();
+ 214   3                              while(keypad_value==42)
+ 215   3                              {
+ 216   4                              main_test ();
+ 217   4                              }
+ 218   3                       }
+ 219   2              }
+ 220   1              
+ 221   1      }
+ 222          void print_lcd_back_to_menu (void)
+ 223          {
+ 224   1              clear_lcd();
+ 225   1              lcd_line1 ();sprintf(lcd_buffer," Please Press * ");print_lcd ();
+ 226   1              lcd_line2 ();sprintf(lcd_buffer," Back  to  Menu ");print_lcd ();
+ 227   1              lcd_line3 ();sprintf(lcd_buffer," /////   /^^^/ ");print_lcd ();
+ 228   1              lcd_line4 ();sprintf(lcd_buffer,"(@^_^@)  |*_*| ");print_lcd ();
+ 229   1      }
+ 230          
+ 231          void delay(unsigned long i)
+ 232          {
+ 233   1        while(i > 0) {i--;}                                                                   // Loop Decrease Counter        
+ 234   1        return;
+ 235   1      }
+ 236          
+ 237          
+ 238          
+
+
+C51 COMPILER V8.12   TEST_IC_V2_H                                                          08/08/2010 05:42:40 PAGE 5   
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =  29936    ----
+   CONSTANT SIZE    =    666    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =    197      61
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       2
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
